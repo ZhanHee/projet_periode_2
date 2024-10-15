@@ -87,6 +87,7 @@ public class MaisonController {
                 }
             }map.put(m, point);
         }
+        return map;
     }
 
 
