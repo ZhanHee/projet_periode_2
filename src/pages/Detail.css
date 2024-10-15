@@ -1,0 +1,133 @@
+body {
+  background: url("/peakpx.jpg") no-repeat center center fixed;
+  background-size: cover;
+  font-family: "Lobster Two", cursive;
+  margin: 0;
+  padding: 0;
+  color: #fff;
+}
+
+.profile-container {
+  padding: 20px;
+  max-width: 800px;
+  margin: auto;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.profile-container h2 {
+  margin-top: 20px;
+}
+
+.profile-header {
+  text-align: center;
+  margin-bottom: 5px;
+}
+
+.profile-name {
+  font-size: 36px;
+  font-weight: bold;
+}
+
+.profile-house {
+  font-size: 20px;
+  color: #ffcc00;
+  font-style: italic;
+}
+
+.profile-points {
+  font-size: 18px;
+  margin-top: 10px;
+}
+
+.profile-details {
+  margin-top: 20px;
+}
+
+.detail-item {
+  font-size: 18px;
+  margin: 10px 0;
+}
+
+.profile-footer {
+  text-align: center;
+  margin-top: 30px;
+  font-size: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profile-footer button {
+  margin: 5px;
+}
+
+.profile-house.Gryffondor {
+  color: #c00;
+}
+
+.profile-house.Serdaigle {
+  color: #00f;
+}
+
+.profile-house.Poufsouffle {
+  color: #ffcc00;
+}
+
+.profile-house.Serpentard {
+  color: #3c9a3c;
+}
+
+.logoMaison {
+  height: 100px;
+  width: 100px;
+}
+
+.title {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.box {
+  display: flex;
+
+  justify-content: center;
+  align-items: center;
+}
+
+.box div {
+  width: 50px;
+  height: 50px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+.box input {
+  width: 70px;
+  height: 50px;
+  font-size: 20px;
+  text-align: center;
+  border: none;
+  background: transparent;
+  color: #fff;
+  font-family: "Lobster Two", serif; 
+  border-bottom: 2px solid #ffd700; 
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.7); 
+  transition: all 0.3s ease; 
+  outline: none;
+}
+
+.box input:focus {
+  border-bottom-color: #fff; 
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.8); 
+  color: #ffd700; 
+}
+
+.box input::placeholder {
+  color: #ffd700; 
+  opacity: 0.7;
+}
