@@ -77,7 +77,6 @@ public class MaisonController {
         return ResponseEntity.ok(nomMaisonGagnante);
     }
 
-    @GetMapping("/{nomMaison}")
     public HashMap<MaisonDTO, Integer> afficherPointDeMaison(){
         HashMap<MaisonDTO, Integer> map = new HashMap<>();
         int point = 0;
@@ -88,8 +87,6 @@ public class MaisonController {
                 }
             }map.put(m, point);
         }
-        for(MaisonDTO mapmaison: map.keySet())
-        System.out.println(mapmaison.getNomMaison(),);
     }
 
 

@@ -93,7 +93,7 @@ public class ProfesseurController {
      * @param idp L'ID du professeur à supprimer.
      * @param ide L'ID de l'eleve à supprimer.
      */
-    @DeleteMapping("/{id}")
+
     public void deleteEleveByProfesseurId(Integer idp,Integer ide) {
         ecoleService.deleteEleveByProfesseurId(idp,ide);
     }
