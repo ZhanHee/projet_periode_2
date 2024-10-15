@@ -9,7 +9,7 @@ import jakarta.persistence.*;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity
 @Table(name = "propositionpartie", schema = "miagie")
-public class Propositionpartie {
+public class PropositionPartie {
     /**
      * Identifiant de la proposition
      */
@@ -33,28 +33,28 @@ public class Propositionpartie {
     /**
      * Identifiant de l'élève vainqueur
      */
-    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ideleve_vainqueur", nullable = true)
     private Eleve ideleveVainqueur;
 
     /**
      * Identifiant de l'élève receveur de proposition
      */
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "ideleve_receveur", nullable = false)
     private Eleve ideleveReceveur;
 
     /**
      * Identifiant de l'élève lanceur de proposition
      */
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "ideleve_lanceur", nullable = false)
     private Eleve ideleveLanceur;
 
     /**
      * Jeu associé à la proposition
      */
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "nomJeu", referencedColumnName = "nomJeu", nullable = false ) // Assurez-vous que c'est correct
     private Jeu jeu;
 
@@ -66,7 +66,8 @@ public class Propositionpartie {
      * @param jeu jeu associé
      * @param mise mise de la partie
      */
-    public Propositionpartie(Eleve eSource, Eleve eDest, Jeu jeu, int mise) {
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    public PropositionPartie(Eleve eSource, Eleve eDest, Jeu jeu, int mise) {
         this.ideleveLanceur = eSource;
         this.ideleveReceveur = eDest;
         this.mise = mise;
@@ -78,7 +79,8 @@ public class Propositionpartie {
     /**
      * Constructeur vide de la classe Propositionpartie
      */
-    public Propositionpartie() {
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    public PropositionPartie() {
     }
 
     /**
@@ -146,4 +148,19 @@ public class Propositionpartie {
     }
 
 
+    public void setIdEleveLanceur(Eleve lanceur) {
+        this.ideleveLanceur = lanceur;
+    }
+
+    public void setIdEleveReceveur(Eleve receveur) {
+        this.ideleveReceveur = receveur;
+    }
+
+    public void setMise(int mise) {
+        this.mise = mise;
+    }
+
+    public void setJeu(String nomJeu){
+        this.jeu = new Jeu(nomJeu);
+    }
 }

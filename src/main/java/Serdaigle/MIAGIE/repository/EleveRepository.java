@@ -9,25 +9,28 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Repository du modèle "Eleve". Fait le lien avec la base de données et alimente le modèle.
  */
 @Repository
 public interface EleveRepository extends JpaRepository<Eleve, Integer> {
+
+    Optional<Eleve> findByIdEleve(Integer idEleve);
     /**
      * Requête custom pour récupérer un élève avec sa maison (FK).
      * @param idEleve identifiant de l'élève
      * @return l'élève avec sa maison
      */
-    @Query("SELECT e FROM Eleve e LEFT JOIN FETCH e.nomMaison WHERE e.idEleve = :idEleve")
+    @Query("SELECT e FROM eleve e LEFT JOIN FETCH e.nomMaison WHERE e.idEleve = :idEleve")
     Eleve getEleveByIdWithMaison(@Param("idEleve") int idEleve);
 
     /**
      * Requête custom pour récupérer tous les élèves des maisons non Serdaigle.
      * @return la liste des élèves des maisons non Serdaigle
      */
-    @Query("SELECT e FROM Eleve e WHERE e.nomMaison.nomMaison <> 'Serdaigle'")
+    @Query("SELECT e FROM eleve e WHERE e.nomMaison.nomMaison <> 'Serdaigle'")
     Iterable<Eleve> findElevesFromOtherHouses();
 
     /**
@@ -37,7 +40,7 @@ public interface EleveRepository extends JpaRepository<Eleve, Integer> {
      */
     @Transactional
     @Modifying
-    @Query("UPDATE Eleve e SET e.totalPoints = e.totalPoints + :nbPoints WHERE e.idEleve = :idEleve")
+    @Query("UPDATE eleve e SET e.totalPoints = e.totalPoints + :nbPoints WHERE e.idEleve = :idEleve")
     void addPoints(@Param("idEleve") int idEleve, @Param("nbPoints") int nbPoints);
 
     /**

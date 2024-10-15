@@ -18,6 +18,6 @@ public interface JeuRepository extends JpaRepository<Jeu, Long> {
      * @param nomJeu Nom du jeu
      * @return Jeu
      */
-    @Query("SELECT j FROM Jeu j WHERE j.nomJeu = :nomJeu")
+    @Query("SELECT j FROM jeu j WHERE j.nomJeu = :nomJeu")
     Optional<Jeu> findByNom(@Param("nomJeu") String nomJeu);
 }

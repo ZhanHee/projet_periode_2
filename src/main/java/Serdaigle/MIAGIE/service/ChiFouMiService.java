@@ -2,7 +2,7 @@ package Serdaigle.MIAGIE.service;
 import Serdaigle.MIAGIE.exception.*;
 import Serdaigle.MIAGIE.model.Jeu;
 import Serdaigle.MIAGIE.model.Partie;
-import Serdaigle.MIAGIE.model.Propositionpartie;
+import Serdaigle.MIAGIE.model.PropositionPartie;
 import Serdaigle.MIAGIE.repository.JeuRepository;
 import Serdaigle.MIAGIE.repository.PartieRepository;
 import Serdaigle.MIAGIE.tooling.ToolingMethods;
@@ -104,7 +104,7 @@ public class ChiFouMiService {
             }
             // A ce stade les eleves sont bien dans une maison opposée et ont assez de points pour miser
             // On crée la proposition de partie
-            Propositionpartie propositionPartie = this.propositionPartieRepository.save(new Propositionpartie(source, dest, jeu, mise));
+            PropositionPartie propositionPartie = this.propositionPartieRepository.save(new PropositionPartie(source, dest, jeu, mise));
             return new PropositionPartieDTO(propositionPartie.getId(), sourceDto, destDto, jeu, mise);
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -121,10 +121,10 @@ public class ChiFouMiService {
         // Recuperer l'eleve destinataire
         Eleve eleve = eleveRepository.findById(id).orElseThrow(() -> new EleveNotFoundException("Eleve not found :"+id));
         // Recuperer les propositions de partie reçues
-        Iterable<Propositionpartie> propRecues = this.propositionPartieRepository.getPropositionByJoueurCible(eleve);
+        Iterable<PropositionPartie> propRecues = this.propositionPartieRepository.getPropositionByJoueurCible(eleve);
 
        // Iterable propRecuesDto = this.tooling.convertPropositionPartieListToDtoList(propRecues);
-        return this.tooling.convertPropositionPartieListToDtoList((List<Propositionpartie>) propRecues);
+        return this.tooling.convertPropositionPartieListToDtoList((List<PropositionPartie>) propRecues);
     }
 
     /**
@@ -136,8 +136,8 @@ public class ChiFouMiService {
         //Recuperer l'eleve source
         Eleve eleve = eleveRepository.findById(id).orElseThrow(() -> new EleveNotFoundException("Eleve not found :"+id));
         // Recuperer les propositions de partie proposées
-        Iterable<Propositionpartie> propProposees = this.propositionPartieRepository.getPropositionByJoueurSource(eleve);
-        return this.tooling.convertPropositionPartieListToDtoList((List<Propositionpartie>) propProposees);
+        Iterable<PropositionPartie> propProposees = this.propositionPartieRepository.getPropositionByJoueurSource(eleve);
+        return this.tooling.convertPropositionPartieListToDtoList((List<PropositionPartie>) propProposees);
 
     }
 
@@ -150,7 +150,7 @@ public class ChiFouMiService {
      */
     public void accepterPartie(int idProposition, int idEleve) throws PropositionPartieNotFound, EleveNonAutoriseAAccepterPropositionException, PasAssezDePointsPourMiserException, EleveNotFoundException {
         // construire la proposition
-        Propositionpartie propositionPartie = this.propositionPartieRepository.findById(idProposition).orElseThrow(() -> new PropositionPartieNotFound("Proposition not found :"+idProposition));
+        PropositionPartie propositionPartie = this.propositionPartieRepository.findById(idProposition).orElseThrow(() -> new PropositionPartieNotFound("Proposition not found :"+idProposition));
         // construire l'élève
         Eleve eleve = eleveRepository.findById(idEleve).orElseThrow(() -> new EleveNotFoundException("Eleve not found :"+idEleve));
         // verifier que l'eleve qui accepte est bien celui qui est la cible de la proposition

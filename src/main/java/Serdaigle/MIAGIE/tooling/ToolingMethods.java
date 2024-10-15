@@ -1,17 +1,16 @@
 package Serdaigle.MIAGIE.tooling;
 
-import Serdaigle.MIAGIE.dto.EleveDTO;
-import Serdaigle.MIAGIE.dto.ProfesseurDTO;
-import Serdaigle.MIAGIE.dto.PropositionPartieDTO;
-import Serdaigle.MIAGIE.model.Eleve;
-import Serdaigle.MIAGIE.model.Professeur;
-import Serdaigle.MIAGIE.model.Propositionpartie;
+import Serdaigle.MIAGIE.dto.*;
+import Serdaigle.MIAGIE.model.*;
+import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Classe de méthodes utilitaires pour manipuler les données
  */
+@Service
 public  class  ToolingMethods {
 
     /**
@@ -31,7 +30,7 @@ public  class  ToolingMethods {
                 eleve.getNom(),
                 eleve.getPrenom(),
                 eleve.getTotalPoints(),
-                eleve.getNomMaison()
+                this.convertMaisonToDto(eleve.getMaison())
         );
     }
 
@@ -80,7 +79,7 @@ public  class  ToolingMethods {
      * @param prop proposition de partie
      * @return PropositionPartieDTO
      */
-    public PropositionPartieDTO convertPropositionPartieToDto(Propositionpartie prop){
+    public PropositionPartieDTO convertPropositionPartieToDto(PropositionPartie prop){
         return new PropositionPartieDTO(prop.getId(),this.convertEleveToDto(prop.getEleveLanceur()), this.convertEleveToDto(prop.getEleveReceveur()), prop.getJeu(), prop.getMise());
     }
 
@@ -89,14 +88,46 @@ public  class  ToolingMethods {
      * @param propRecues liste de propositions de partie reçues
      * @return ArrayList
      */
-    public ArrayList<PropositionPartieDTO> convertPropositionPartieListToDtoList(List<Propositionpartie> propRecues){
+    public ArrayList<PropositionPartieDTO> convertPropositionPartieListToDtoList(List<PropositionPartie> propRecues){
         ArrayList<PropositionPartieDTO> propRecuesDto = new ArrayList<>();
-        for (Propositionpartie p : propRecues){
+        for (PropositionPartie p : propRecues){
             PropositionPartieDTO pdto = new PropositionPartieDTO(p.getId(),this.convertEleveToDto(p.getEleveLanceur()), this.convertEleveToDto(p.getEleveReceveur()), p.getJeu(), p.getMise());
             propRecuesDto.add(pdto);
         }
         return propRecuesDto;
     }
+
+    public PartieDTO convertPartieToDto(Partie partie) {
+        int idPartie = partie.getId();
+        PropositionPartieDTO propositionPartieDto = this.convertPropositionPartieToDto(partie.getPropositionPartie());
+        return new PartieDTO(idPartie, propositionPartieDto);
+    }
+
+    public MouvementDTO convertMouvementToDto(Mouvement mouvement) {
+        return new MouvementDTO(
+                mouvement.getId(),
+                mouvement.getCoup(),
+                mouvement.getTimestampp(),
+                mouvement.getIdEleve().getId()
+        );
+    }
+
+    public MaisonDTO convertMaisonToDto(Maison maison){
+        return new MaisonDTO(
+                maison.getNomMaison(),
+                maison.getTotalPoints(),
+                this.convertElevesToDto(maison.getEleves())
+        );
+    }
+
+    private List<EleveDTO> convertElevesToDto(List<Eleve> eleves) {
+        ArrayList<EleveDTO> elevesDto= new ArrayList<>();
+        for (Eleve e : eleves){
+            elevesDto.add(this.convertEleveToDto(e));
+        }
+        return elevesDto;
+    }
+
 
 }
 

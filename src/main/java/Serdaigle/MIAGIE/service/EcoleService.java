@@ -157,7 +157,7 @@ public class EcoleService {
             throw new EleveNotFoundException("Eleve not found with id: " + idEleve);
         }
         EleveDTO eleveDTO = new EleveDTO(eleve.get().getId(), eleve.get().getNom(),
-                eleve.get().getPrenom(), eleve.get().getTotalPoints(), eleve.get().getNomMaison());
+                eleve.get().getPrenom(), eleve.get().getTotalPoints(), tooling.convertMaisonToDto(eleve.get().getMaison()));
 
         return eleveDTO;
     }
@@ -322,5 +322,4 @@ public class EcoleService {
         MaisonDTO maisonDTO = this.convertMaisonToDto(maison);
         return maisonDTO;
     }
-
 }

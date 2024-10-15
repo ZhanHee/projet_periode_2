@@ -17,7 +17,7 @@ public interface MaisonRepository extends JpaRepository<Maison, Integer> {
      * @param nomMaison Nom de la maison
      * @return Maison
      */
-    @Query("SELECT m FROM Maison m LEFT JOIN FETCH m.eleves WHERE m.nomMaison = :nomMaison")
+    @Query("SELECT m FROM maison m LEFT JOIN FETCH m.eleves WHERE m.nomMaison = :nomMaison")
     Maison getMaisonWithElevesByNomMaison(@Param("nomMaison") String nomMaison);
 
     /**
@@ -32,7 +32,7 @@ public interface MaisonRepository extends JpaRepository<Maison, Integer> {
      * @param nomMaison Nom de la maison
      * @return int nombre total de points
      */
-    @Query("SELECT SUM(e.totalPoints) FROM Eleve e WHERE e.nomMaison.nomMaison = :nomMaison")
+    @Query("SELECT SUM(e.totalPoints) FROM eleve e WHERE e.nomMaison.nomMaison = :nomMaison")
     int countTotalPoints(@Param("nomMaison") String nomMaison);
 
 
@@ -40,6 +40,6 @@ public interface MaisonRepository extends JpaRepository<Maison, Integer> {
      * Récupère la maison gagnante
      * @return Maison
      */
-    @Query("SELECT e.nomMaison, SUM(e.totalPoints) FROM Eleve e GROUP BY e.nomMaison ORDER by SUM(e.totalPoints) DESC  limit 1")
+    @Query("SELECT e.nomMaison, SUM(e.totalPoints) FROM eleve e GROUP BY e.nomMaison ORDER by SUM(e.totalPoints) DESC  limit 1")
     Maison getMaisonGagnante();
 }

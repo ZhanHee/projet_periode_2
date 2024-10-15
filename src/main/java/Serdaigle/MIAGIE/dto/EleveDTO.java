@@ -1,4 +1,6 @@
 package Serdaigle.MIAGIE.dto;
+
+
 /**
  * Classe représentant un élève métier de l'application
  */
@@ -10,7 +12,7 @@ public class EleveDTO extends PersonneDTO{
     /**
      * Nom de la maison de l'élève
      */
-    private final String nomMaison;
+    private MaisonDTO maison;
 
     /**
      * Constructeur de la classe EleveDTO
@@ -18,21 +20,36 @@ public class EleveDTO extends PersonneDTO{
      * @param nom nom de l'élève
      * @param prenom prenom de l'élève
      * @param totalPoints nombre de points de l'élève
-     * @param nomMaison nom de la maison de l'élève
+     * @param maison la maison de l'élève
      */
-    public EleveDTO(Integer idEleve, String nom, String prenom,  Integer totalPoints, String nomMaison) {
+    public EleveDTO(Integer idEleve, String nom, String prenom, Integer totalPoints, MaisonDTO maison) {
         super(idEleve, nom, prenom);
         this.totalPoints = totalPoints;
-        this.nomMaison = nomMaison;
+        this.setMaison(maison);
     }
     /**
      * Getter de l'attribut nomMaison
      * @return nom de la maison
      */
-    public String getNomMaison() {
-        return nomMaison;
+    public MaisonDTO getMaison() {
+        return maison;
     }
 
+    public void setMaison(MaisonDTO maison) {
+        if (this.maison == maison) {
+            return;
+        }
+        // Retirer de l'ancienne maison (si elle existe)
+        if (this.maison != null) {
+            this.maison.removeEleve(this);
+        }
+        // Ajouter à la nouvelle maison
+        if (maison != null && !maison.getEleves().contains(this)) {
+            maison.addEleve(this);
+        }
+        // Mettre à jour l'attribut maison de l'élève
+        this.maison = maison;
+    }
 
     /*
      * Definit le type d'utilisateur comme étant un élève

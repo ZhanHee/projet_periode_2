@@ -8,14 +8,16 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "mouvement", schema = "miagie")
 public class Mouvement {
-    @EmbeddedId
-    private MouvementId id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "idMouv", nullable = false)
+    private Integer id;
 
     /**
      * Eleve effectuant le mouvement
      */
     @MapsId("idEleve")
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "idEleve", nullable = false)
     private Eleve idEleve;
 
@@ -23,13 +25,17 @@ public class Mouvement {
      * Date du mouvement
      */
     @Column(name = "timestampp", length = 50)
-    private String timestampp;
+    private long timestampp;
+
+    @Column(name = "coup", nullable = false, length = 50)
+    private String coup;
+
 
     /**
      * Getter de l'id du mouvement
      * @return id
      */
-    public MouvementId getId() {
+    public int getId() {
         return id;
     }
 
@@ -37,7 +43,7 @@ public class Mouvement {
      * Setter de l'id du mouvement
      * @param id identifiant du mouvement
      */
-    public void setId(MouvementId id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -61,7 +67,7 @@ public class Mouvement {
      * Getter de la date du mouvement
      * @return timestampp
      */
-    public String getTimestampp() {
+    public long getTimestampp() {
         return timestampp;
     }
 
@@ -69,8 +75,16 @@ public class Mouvement {
      * Setter de la date du mouvement
      * @param timestampp date du mouvement
      */
-    public void setTimestampp(String timestampp) {
+    public void setTimestampp(long timestampp) {
         this.timestampp = timestampp;
+    }
+
+    public String getCoup() {
+        return coup;
+    }
+
+    public void setCoup(String coup) {
+        this.coup = coup;
     }
 
 }

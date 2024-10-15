@@ -3,6 +3,10 @@ package Serdaigle.MIAGIE.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import org.hibernate.annotations.ColumnDefault;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Classe représentant un élève brut issu de la base de données
  */
@@ -42,7 +46,25 @@ public class Eleve {
      */
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "nomMaison", referencedColumnName = "nomMaison", nullable = false)
-    private Maison nomMaison;
+    private Maison maison;
+
+    /**
+     * Propositions Recues
+     */
+    @OneToMany(mappedBy = "eleve", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<PropositionPartie> propositionsRecues;
+
+    /**
+     * Propositions Envoyees
+     */
+    @OneToMany(mappedBy = "eleve", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<PropositionPartie> propositionsEnvoyees;
+
+    /**
+     * Evaluations concernees
+     */
+    @OneToMany(mappedBy = "eleve", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private ArrayList<Evaluer> evaluations;
 
     /**
      * Constructeur de la classe Eleve
@@ -72,15 +94,16 @@ public class Eleve {
      * @return Maison
      */
     public Maison getMaison() {
-        return nomMaison;
+        return maison;
     }
 
     /**
      * Getter du nom de la maison de l'élève
+     *
      * @return String
      */
     public String getNomMaison(){
-        return nomMaison.getNomMaison();
+        return maison.getNomMaison();
     }
 
     /**
@@ -88,8 +111,23 @@ public class Eleve {
      * @param maison maison de l'élève
      */
     public void setMaison(Maison maison) {
-        this.nomMaison = maison;
+        if (this.maison == maison) {
+            return;
+        }
+
+        // Retirer l'élève de l'ancienne maison (s'il y en a une)
+        if (this.maison != null) {
+            this.maison.removeEleve(this);
+        }
+
+        // Ajouter l'élève à la nouvelle maison
+        if (maison != null && !maison.getEleves().contains(this)) {
+            maison.addEleve(this);
+        }
+
+        this.maison = maison;
     }
+
 
     /**
      * Getter du total de points de l'élève
@@ -138,5 +176,10 @@ public class Eleve {
     public void setPrenom(String prenom) {
         this.prenom = prenom;
     }
+
+    public ArrayList<Evaluer> getEvaluations(){return evaluations;}
+
+    public void addScore(int value){this.totalPoints += value;}
+
 
 }

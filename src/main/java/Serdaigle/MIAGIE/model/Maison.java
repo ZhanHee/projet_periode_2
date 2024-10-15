@@ -1,9 +1,9 @@
 package Serdaigle.MIAGIE.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,13 +19,22 @@ public class Maison {
     @Column(name = "nomMaison", nullable = false, length = 50)
     private String nomMaison;
 
-    /**
-     * Liste des élèves de la maison
-     */
-    @OneToMany(mappedBy = "nomMaison", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
-    @JsonIgnore
-    private List<Eleve> eleves;
+    @OneToMany(mappedBy = "maison", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties({"maison", "hibernateLazyInitializer", "handler"})
+    private List<Eleve> eleves = new ArrayList<>();
+
+    public Maison(String nom) {
+        this.nomMaison = nom;
+    }
+
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    public Maison() {
+
+    }
+
+    public List<Eleve> getEleves() {
+        return eleves;
+    }
 
     /**
      * getter du nom de la maison
@@ -43,12 +52,22 @@ public class Maison {
         this.nomMaison = nomMaison;
     }
 
-    /**
-     * getter de la liste des élèves de la maison
-     * @return List
-     */
-    public List<Eleve> getEleves() {
-        return eleves;
+    public void addEleve(Eleve eleve) {
+        if (!eleves.contains(eleve)) {
+            eleves.add(eleve);
+            eleve.setMaison(this);
+        }
+    }
+
+    public void removeEleve(Eleve eleve) {
+        if (eleves.contains(eleve)) {
+            eleves.remove(eleve);
+            eleve.setMaison(null);
+        }
+    }
+
+    public int getTotalPoints() {
+        return eleves.stream().mapToInt(Eleve::getTotalPoints).sum();
     }
 
 }

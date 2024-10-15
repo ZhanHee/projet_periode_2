@@ -17,7 +17,7 @@ public interface ProfesseurRepository extends JpaRepository<Professeur, Integer>
      * @param nom le nom ou prénom du professeur
      * @return la liste des professeurs correspondant
      */
-    @Query("SELECT e FROM Professeur e WHERE e.nom LIKE :nom% OR e.prenom LIKE :nom%")
+    @Query("SELECT e FROM professeur e WHERE e.nom LIKE :nom% OR e.prenom LIKE :nom%")
     List<Professeur> searchWithFilter(String nom);
 
 }

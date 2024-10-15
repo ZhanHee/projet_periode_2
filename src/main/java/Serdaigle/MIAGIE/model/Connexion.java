@@ -68,6 +68,9 @@ public class Connexion {
         this.nomMaison = nomMaison;
     }
 
+    public Connexion() {
+    }
+
     // Getters et setters
 
     public String getPseudo() {

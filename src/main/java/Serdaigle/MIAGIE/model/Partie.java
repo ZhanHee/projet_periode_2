@@ -1,5 +1,6 @@
 package Serdaigle.MIAGIE.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 /**
@@ -22,12 +23,12 @@ public class Partie {
      */
     @OneToOne
     @JoinColumn(name = "idProposition", referencedColumnName = "idProposition")  // Assure-toi que le nom de la colonne est correct
-    private Propositionpartie propositionPartie;
+    private PropositionPartie propositionPartie;
 
     /**
      * Nom du jeu associé à la partie
      */
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "nomJeu", referencedColumnName = "nomJeu")
     private Jeu nomJeu;
 
@@ -35,7 +36,7 @@ public class Partie {
      * Constructeur de la classe Partie
      * @param propositionPartie proposition associée à la partie
      */
-    public Partie(Propositionpartie propositionPartie) {
+    public Partie(PropositionPartie propositionPartie) {
         this.propositionPartie = propositionPartie;
         this.nomJeu = propositionPartie.getJeu();
     }
@@ -43,6 +44,7 @@ public class Partie {
     /**
      * Constructeur vide de la classe Partie
      */
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     public Partie() {
 
     }
@@ -76,7 +78,7 @@ public class Partie {
      * Getter de la proposition associée à la partie
      * @return propositionPartie
      */
-    public Propositionpartie getPropositionPartie() {
+    public PropositionPartie getPropositionPartie() {
         return propositionPartie;
     }
 

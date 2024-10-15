@@ -6,4 +6,20 @@ package Serdaigle.MIAGIE.dto;
  * PartieDTO
  */
 public class PartieDTO {
+
+    private final int idPartie;
+    private final PropositionPartieDTO propositionPartie;
+
+    public PartieDTO(int idPartie, PropositionPartieDTO propositionPartie){
+        this.idPartie = idPartie;
+        this.propositionPartie = propositionPartie;
+    }
+
+    public int getIdPartie() {
+        return idPartie;
+    }
+
+    public PropositionPartieDTO getPropositionPartie() {
+        return propositionPartie;
+    }
 }
