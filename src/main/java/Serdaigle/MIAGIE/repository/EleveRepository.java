@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Repository du modèle "Eleve". Fait le lien avec la base de données et alimente le modèle.
@@ -21,7 +22,7 @@ public interface EleveRepository extends JpaRepository<Eleve, Integer> {
      * @return l'élève avec sa maison
      */
     @Query("SELECT e FROM Eleve e LEFT JOIN FETCH e.nomMaison WHERE e.idEleve = :idEleve")
-    Eleve getEleveByIdWithMaison(@Param("idEleve") int idEleve);
+    Optional<Eleve> getEleveByIdWithMaison(@Param("idEleve") int idEleve);
 
     /**
      * Requête custom pour récupérer tous les élèves des maisons non Serdaigle.

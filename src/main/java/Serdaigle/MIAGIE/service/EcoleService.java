@@ -3,11 +3,14 @@ package Serdaigle.MIAGIE.service;
 import Serdaigle.MIAGIE.dto.EleveDTO;
 import Serdaigle.MIAGIE.dto.MaisonDTO;
 import Serdaigle.MIAGIE.dto.ProfesseurDTO;
+import Serdaigle.MIAGIE.dto.PropositionPartieDTO;
 import Serdaigle.MIAGIE.exception.EleveNotFoundException;
 import Serdaigle.MIAGIE.exception.ProfesseurNotFoundException;
 import Serdaigle.MIAGIE.model.*;
 import Serdaigle.MIAGIE.repository.*;
 import Serdaigle.MIAGIE.tooling.ToolingMethods;
+import jakarta.persistence.Access;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -46,6 +49,9 @@ public class EcoleService {
      * attribut evaluerRepository
      */
     private final EvaluerRepository evaluerRepository;
+
+    @Autowired
+    private PropositionPartieRepository propositionPartieRepository;
 
     private final ToolingMethods tooling;
 
@@ -152,7 +158,7 @@ public class EcoleService {
      * @return EleveDTO
      */
     public EleveDTO getEleveByIdWithMaison(int idEleve) {
-        Optional<Eleve> eleve = eleveRepository.findById(idEleve);
+        Optional<Eleve> eleve = eleveRepository.getEleveByIdWithMaison(idEleve);
         if(!eleve.isPresent()) {
             throw new EleveNotFoundException("Eleve not found with id: " + idEleve);
         }
@@ -323,4 +329,11 @@ public class EcoleService {
         return maisonDTO;
     }
 
+    public Iterable<PropositionPartieDTO> getPropositionNonAcceptee(Integer id) {
+        return propositionPartieRepository.getPropositionNonAccepteeByReceveur(id);
+    }
+
+    public Iterable<PropositionPartieDTO> getPropositionEnAttends(Integer id) {
+        return propositionPartieRepository.getPropositionEnAttendsByReceveur(id);
+    }
 }

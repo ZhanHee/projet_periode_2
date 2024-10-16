@@ -2,6 +2,7 @@ package Serdaigle.MIAGIE.service;
 
 import Serdaigle.MIAGIE.exception.EleveNotFoundException;
 import Serdaigle.MIAGIE.exception.PartieNotFoundException;
+import Serdaigle.MIAGIE.exception.PropositionPartieNotFound;
 import Serdaigle.MIAGIE.model.Eleve;
 import Serdaigle.MIAGIE.model.Mouvement;
 import Serdaigle.MIAGIE.model.Partie;
@@ -31,23 +32,27 @@ public class ChiFouMiInterService {
     private MouvementRepository mouvementRepository;
     @Autowired
     private EleveRepository eleveRepository;
+
     private ScheduledExecutorService scheduler;
 
     @Autowired
     private EntityManager entityManager;
+    private Partie partie;
+    private List<Mouvement> mouvements;
     private Map<Integer, String> optionsCoups = new HashMap<>();
 
     public ChiFouMiInterService() {
+        mouvements = new ArrayList<>();
         optionsCoups.put(Integer.valueOf(1), "BAGUETTE");
         optionsCoups.put(Integer.valueOf(2), "BALAI");
         optionsCoups.put(Integer.valueOf(3), "CHAUDRON");
+        this.partie = new Partie();
     }
 
     // Méthode pour lancer une partie
-    public int lancerPartie(Propositionpartie prop, Eleve joueur, boolean isLanceur) throws PartieNotFoundException {
-        Partie partie = isLanceur ? partieRepository.getPartieByIdProposition(prop.getId())
-                : accepterPartie(prop);
-
+    public int lancerPartie(Partie partie, Eleve joueur, int coupId) throws PartieNotFoundException {
+        Propositionpartie prop = partie.getPropositionPartie();
+        this.partie = partie;
         if ("SERPENTARD".equals(joueur.getMaison().getNomMaison())) {
             Runnable task = () -> {
                 try {
@@ -59,28 +64,21 @@ public class ChiFouMiInterService {
             scheduler.scheduleAtFixedRate(task, 0, 2, TimeUnit.SECONDS);
         }
 
-        int idGagnant = start(partie, joueur);
+        int idGagnant = start(joueur, coupId);
         if (idGagnant == joueur.getId()) {
             System.out.println("Vous avez gagné ! + " + prop.getMise() + " points pour " + joueur.getMaison().getNomMaison());
             prop.setGagnant(joueur);
-            propositionPartieRepository.save(prop);
+            propositionPartieRepository.updateGagnant(prop.getId(),idGagnant);
         } else {
             System.out.println("Vous avez perdu :/");
         }
         return idGagnant;
     }
 
-    private Partie accepterPartie(Propositionpartie prop) {
-        // Acceptation d'une proposition de partie
-        Partie partie = new Partie(prop);
-        return partieRepository.save(partie);
-    }
-
-    public int start(Partie partie, Eleve joueur) throws PartieNotFoundException {
-        List<Mouvement> mouvements = new ArrayList<>();
+    public int  start(Eleve joueur, int coupId) throws PartieNotFoundException {
         while (true) {
             if (canPlay(mouvements, joueur, partie)) {
-                ajouterMouvement(partie.getId(), joueur.getId(), mouvements.get(mouvements.size() - 1).getId());
+                ajouterMouvement(partie.getId(), joueur.getId(), coupId);
                 System.out.println("Attente du mouvement de l'adversaire...");
             }
 
@@ -120,30 +118,24 @@ public class ChiFouMiInterService {
                 if (log) {
                     System.out.println(m + "...");
                 }
-                dbMouvements.add(m);
+                mouvements.add(m);
             }
         }
     }
 
-//    private void ajouterMouvement(Partie partie, Eleve joueur, List<Mouvement> mouvements) {
-//        Integer coup = Menu.showGenericMenu(optionsCoups, "Choisis un mouvement");
-//        Mouvement m = new Mouvement(joueur, partie, optionsCoups.get(coup));
-//        mouvementRepository.save(m);
-//        mouvements.add(m);
-//    }
-
     public void ajouterMouvement(int partieId, int joueurId, int coupId) throws PartieNotFoundException {
-        Partie partie = partieRepository.findById(Integer.valueOf(partieId))
+        Partie partie = partieRepository.findById(partieId)
                 .orElseThrow(() -> new PartieNotFoundException("Partie not found: " + partieId));
 
-        Eleve joueur = eleveRepository.findById(Integer.valueOf(joueurId))
+        Eleve joueur = eleveRepository.findById(joueurId)
                 .orElseThrow(() -> new EleveNotFoundException("Joueur not found: " + joueurId));
 
-        if (!optionsCoups.containsKey(Optional.of(coupId))) {
+        if (!optionsCoups.containsKey(coupId)) {
             throw new IllegalArgumentException("Coup non valide: " + coupId);
         }
 
-        Mouvement m = new Mouvement(joueur, optionsCoups.get(Optional.of(coupId)), partie);
+        Mouvement m = new Mouvement(joueur, optionsCoups.get(coupId), partie);
+        this.mouvements.add(m);
         mouvementRepository.save(m);
     }
 
@@ -152,7 +144,7 @@ public class ChiFouMiInterService {
         CoupChifoumi coup2 = CoupChifoumi.valueOf(m2.getMouv());
 
         if (coup1 == coup2) {
-            return null; // Égalité
+            return -1; // Égalité
         }
 
         switch (coup1) {
@@ -163,7 +155,7 @@ public class ChiFouMiInterService {
             case CHAUDRON:
                 return (coup2 == CoupChifoumi.BAGUETTE) ? m1.getIdEleve().getId() : m2.getIdEleve().getId();
             default:
-                return null;
+                return -1;
         }
     }
 
@@ -183,12 +175,23 @@ public class ChiFouMiInterService {
         return null;
     }
 
-    @Transactional
-    public void saveMouvement(Mouvement mouvement) {
-        entityManager.persist(mouvement);
-    }
-
     public List<Mouvement> findMouvementsByPartie(Partie partie) {
         return mouvementRepository.findByPartie(partie);
+    }
+
+    public Optional<Partie> findById(int partieId) {
+        return partieRepository.findById(partieId);
+    }
+
+    public Eleve findJoueurByIdJoueur(int joueurId) {
+        Optional<Eleve> eleve = eleveRepository.findById(joueurId);
+        if(!eleve.isPresent()) {
+            throw new EleveNotFoundException("Eleve not found with id: " + joueurId);
+        }
+        return eleve.get();
+    }
+
+    public Partie findPartieByIdPartie(int partieId) {
+        return partieRepository.findById(partieId).get();
     }
 }

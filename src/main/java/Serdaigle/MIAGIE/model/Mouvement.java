@@ -30,8 +30,8 @@ public class Mouvement {
     @Column(name = "mouv", length = 50)
     private String mouv;
 
-    @OneToOne
-    @JoinColumn(name = "idPartie", referencedColumnName = "idPartie")
+    @OneToOne(fetch = FetchType.LAZY,optional = false)
+    @JoinColumn(name = "idPartie",insertable = false, updatable = false)
     private Partie partie;
 
     public Mouvement(Eleve eleve, String mouv, Partie partie){
@@ -39,7 +39,12 @@ public class Mouvement {
         this.timestampp = String.valueOf(LocalDateTime.now());
         this.mouv = mouv;
         this.partie = partie;
+
+        this.id = new MouvementId();
+        this.id.setIdEleve(eleve.getId());
+        this.id.setIdPartie(partie.getId());
     }
+
 
     public Mouvement() {
 

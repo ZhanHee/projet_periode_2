@@ -5,6 +5,7 @@ import Serdaigle.MIAGIE.exception.ElevesDansLaMemeMaisonException;
 import Serdaigle.MIAGIE.exception.PasAssezDePointsPourMiserException;
 import Serdaigle.MIAGIE.exception.PropositionPartieNotFound;
 import Serdaigle.MIAGIE.model.Eleve;
+import Serdaigle.MIAGIE.service.ChiFouMiInterService;
 import Serdaigle.MIAGIE.service.ChiFouMiService;
 import Serdaigle.MIAGIE.service.EcoleService;
 import Serdaigle.MIAGIE.dto.PropositionPartieDTO;
@@ -36,6 +37,9 @@ public class EleveController {
      */
     @Autowired
     private  ChiFouMiService chiFouMiService;
+
+    @Autowired
+    private ChiFouMiInterService chiFouMiInterService;
 
     /**
      * GET /eleve
@@ -224,6 +228,14 @@ public class EleveController {
         }
     }
 
+    @GetMapping("/afficherPropositionNonAcceptee/{id}")
+    public Iterable<PropositionPartieDTO> afficherPropositionNonAcceptee(@PathVariable Integer id){
+        return ecoleService.getPropositionNonAcceptee(id);
+    }
 
+    @GetMapping("/afficherPropositionEnAttends/{id}")
+    public Iterable<PropositionPartieDTO> afficherPropositionEnAttends(@PathVariable Integer id){
+        return ecoleService.getPropositionEnAttends(id);
+    }
 
 }

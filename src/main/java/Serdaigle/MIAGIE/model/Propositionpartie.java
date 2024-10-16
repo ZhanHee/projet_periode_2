@@ -146,6 +146,9 @@ public class Propositionpartie {
     }
 
     public void setGagnant(Eleve joueur) {
-        this.ideleveVainqueur = joueur;
+
+    }
+
+    public void setId(int propositionId) {
     }
 }

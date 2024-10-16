@@ -11,6 +11,8 @@ import java.util.Objects;
  */
 @Embeddable
 public class MouvementId implements java.io.Serializable {
+
+
     private static final long serialVersionUID = 6957316629164369763L;
 
     /**
@@ -22,8 +24,8 @@ public class MouvementId implements java.io.Serializable {
     /**
      * Mouvement effectué
      */
-    @Column(name = "mouv", length = 50, insertable = false, updatable = false)
-    private String mouv;
+    @Column(name = "idPartie", nullable = false)
+    private Integer idPartie;
 
     /**
      * Getter de l'identifiant de l'élève
@@ -45,16 +47,12 @@ public class MouvementId implements java.io.Serializable {
      * Getter du mouvement effectué
      * @return mouv
      */
-    public String getMouv() {
-        return mouv;
+    public Integer getIdPartie() {
+        return idPartie;
     }
 
-    /**
-     * Setter du mouvement effectué
-     * @param mouv mouvement effectué
-     */
-    public void setMouv(String mouv) {
-        this.mouv = mouv;
+    public void setIdPartie(Integer idPartie) {
+        this.idPartie = idPartie;
     }
 
     /**
@@ -67,7 +65,7 @@ public class MouvementId implements java.io.Serializable {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         MouvementId entity = (MouvementId) o;
-        return Objects.equals(this.mouv, entity.mouv) &&
+        return Objects.equals(this.idPartie, entity.idPartie) &&
                 Objects.equals(this.idEleve, entity.idEleve);
     }
 
@@ -77,7 +75,7 @@ public class MouvementId implements java.io.Serializable {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(mouv, idEleve);
+        return Objects.hash(idPartie, idEleve);
     }
 
 }

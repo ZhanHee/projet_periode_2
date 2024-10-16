@@ -1,8 +1,11 @@
 package Serdaigle.MIAGIE.repository;
 
+import Serdaigle.MIAGIE.dto.PropositionPartieDTO;
 import Serdaigle.MIAGIE.model.Eleve;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import Serdaigle.MIAGIE.model.Propositionpartie;
 
@@ -42,6 +45,15 @@ public interface PropositionPartieRepository extends JpaRepository<Propositionpa
             " )")
     Iterable<Propositionpartie> getPropositionByJoueurSource(Eleve joueurSource);
 
+    @Modifying
+    @Query("UPDATE Propositionpartie p SET p.ideleveVainqueur = :idGagnant WHERE p.id = :propId")
+    void updateGagnant(@Param("propId") Integer propId, @Param("idGagnant") Integer idGagnant);
+
+    @Query("SELECT p FROM Propositionpartie p WHERE p.ideleveReceveur = :id AND p.refuse = true")
+    Iterable<PropositionPartieDTO> getPropositionNonAccepteeByReceveur(Integer id);
+
+    @Query("SELECT p FROM Propositionpartie p WHERE p.ideleveReceveur = :id AND p.refuse = false AND p.ideleveVainqueur = null")
+    Iterable<PropositionPartieDTO> getPropositionEnAttendsByReceveur(Integer id);
 }
 
 

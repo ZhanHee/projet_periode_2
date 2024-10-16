@@ -87,4 +87,8 @@ public class Partie {
         this.id = id;
     }
 
+    public void SetPropositionPartie(Propositionpartie propositionPartie) {
+        this.propositionPartie = propositionPartie;
+    }
+
 }
