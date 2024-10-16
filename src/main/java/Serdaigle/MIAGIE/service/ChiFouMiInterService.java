@@ -183,12 +183,11 @@ public class ChiFouMiInterService {
         return null;
     }
 
-    @Transactional
-    public void saveMouvement(Mouvement mouvement) {
-        entityManager.persist(mouvement);
-    }
-
     public List<Mouvement> findMouvementsByPartie(Partie partie) {
         return mouvementRepository.findByPartie(partie);
+    }
+
+    public Optional<Partie> findById(int partieId) {
+        return partieRepository.findById(partieId);
     }
 }
